@@ -1,0 +1,1 @@
+open -n /Applications/Microsoft\ Edge.app/ --args --disable-web-security --user-data-dir=~/Desktop/cat_test/userdata

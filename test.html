@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+	    <meta charset="UTF-8">
+	</head>
+	<body>
+         <script src="https://code.jquery.com/jquery-3.7.1.min.js" />
+         <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js" />
+         <script></script>
+         <script>
+         	const _ = {
+				map: function(array, callbackFn) {
+					return array.map(callbackFn);
+				},
+			};
+         	async function req(reqUrl, params) {
+         		if (!params) {
+         			params = {};
+         		}
+				return new Promise((resolve, reject) => {
+				    $.ajax({
+				         method: params.method | 'get',
+				         url: reqUrl,
+                     headers: params.headers,
+				         data: params.data,
+				         dataType: 'json',
+				         success: (data) => {
+				            resolve({
+                           content: JSON.stringify(data),
+                        });
+				         },
+				         error: (exception) => {
+				            reject(exception);
+				 		},
+				   });
+			    });
+			}
+         </script>
+         <script src="file:///Users/singun/Desktop/cat_test/test.js"></script>
+         <script>
+            const jsFunctions = __jsEvalReturn();
+         	const _cfg = {
+         		skey: 'test',
+         		stype: 'test',
+         	};
+         	const _tid = 'home';
+         	const _pg = '1';
+            let homeData = null;
+         	async function _test() {
+	         	await jsFunctions.init(_cfg);
+	         	homeData = await jsFunctions.home();
+         	}
+         	_test().then((data)=> {
+         		console.log("init home success");
+         	});
+            function _category() {
+               const extend = JSON.parse(homeData).filters;
+               jsFunctions.category(_tid, _pg, null, extend).then((data)=> {
+                  console.log(data);
+               });
+            }
+         </script>
+         <button onclick="_category()">Category</button>
+	</body>
+
+</html>

@@ -13,6 +13,7 @@ Object.defineProperty(HTMLElement.prototype, 'attribs', {
     'set': function(value) {
     },
 });
+
 Object.defineProperty(HTMLElement.prototype, 'children', {
     configurable: true,
     enumerable: true,
@@ -22,6 +23,7 @@ Object.defineProperty(HTMLElement.prototype, 'children', {
     'set': function(value) {
     },
 });
+
 const _ = {
     map: function(array, callbackFn) {
         const isArray = Array.isArray(array);
@@ -49,15 +51,34 @@ const _ = {
         return Object.values(object);
     },
 };
+
 function load(html, keepScripts = false) {
     const domItems = $.parseHTML(html, null, keepScripts);
     const $loadContailed = $('#load_container');
     $loadContailed.empty();
     for (const domItem of domItems) {
+        if (!_handleDomItem(domItem)) {
+            continue;
+        }
         $loadContailed.append(domItem);
     }
     return $loadContailed;
 }
+
+function _handleDomItem(domItem) {
+    if (domItem.localName == 'title') {
+        return false;
+    }
+    if (domItem.localName == 'link' && 
+        domItem.attributes.type && domItem.attributes.type.value == 'text/css') {
+        return false;
+    }
+    if (domItem.localName == 'script' && domItem.attributes.src) {
+        return false;
+    }
+    return true;
+}
+
 async function req(reqUrl, params) {
     if (!params) {
         params = {};

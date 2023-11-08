@@ -4,45 +4,10 @@
         <meta charset="UTF-8">
     </head>
     <body>
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js" />
-        <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js" />
-        <script></script>
-        <script>
-            const _ = {
-                map: function(array, callbackFn) {
-                    return array.map(callbackFn);
-                },
-            };
-            async function req(reqUrl, params) {
-                if (!params) {
-                    params = {};
-                }
-                if (params.headers['User-Agent']) {
-                    params.headers['User-Agent'] = undefined;
-                }
-                if (params.headers['Referer']) {
-                    params.headers['Referer'] = undefined;
-                }
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        method: params.method | 'get',
-                        url: reqUrl,
-                        headers: params.headers,
-                        data: params.data,
-                        dataType: 'json',
-                        success: (data) => {
-                            resolve({
-                                content: JSON.stringify(data),
-                            });
-                        },
-                        error: (exception) => {
-                            reject(exception);
-                        },
-                   });
-                });
-            }
-        </script>
-        <script src="./test.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
+        <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js" ></script>
+        <script src="./proxy.js"></script>
+        <script src="./test.js"/></script>
         <script>
             const jsFunctions = __jsEvalReturn();
             const _cfg = {
@@ -51,24 +16,38 @@
             };
             const _tid = '20';
             let homeData = null;
+            let videoId = null;
+            async function _category(page) {
+                const extend = JSON.parse(homeData).filters;
+                return await jsFunctions.category(_tid, page, null, extend);
+            }
+            async function _detail(vid) {
+                return await jsFunctions.detail(vid);
+            }
             async function _test() {
                 await jsFunctions.init(_cfg);
                 homeData = await jsFunctions.home();
-                const extend = JSON.parse(homeData).filters;
-                jsFunctions.category(_tid, '1', null, extend).then((data)=> {
-                    console.log(data);
-                });
+                const categoryStr = await _category(1);
+                console.log(categoryStr);
+                const categoryJson = JSON.parse(categoryStr);
+                videoId = categoryJson.list[0].vod_id;
             }
             _test().then((data)=> {
                 console.log("init home success");
             });
-            function _category() {
-                const extend = JSON.parse(homeData).filters;
-                jsFunctions.category(_tid, '2', null, extend).then((data)=> {
-                   console.log(data);
+            function onClickPage2() {
+                _category(2).then((data) => {
+                    console.log(data);
+                });
+            }
+            function onClickDetail() {
+                _detail(videoId).then((data) => {
+                    console.log(data);
                 });
             }
         </script>
-        <button onclick="_category()">Page2</button>
+        <div id="load_container" style="display:none"></div>
+        <button onclick="onClickPage2()">Page2</button>
+        <button onclick="onClickDetail()">Detail</button>
     </body>
 </html>

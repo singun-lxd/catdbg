@@ -17,14 +17,21 @@
             const _tid = '20';
             let homeData = null;
             let videoId = null;
+            let playUrl = null;
             async function _category(page) {
                 const extend = JSON.parse(homeData).filters;
                 return await jsFunctions.category(_tid, page, null, extend);
             }
-            async function _detail(vid) {
-                return await jsFunctions.detail(vid);
+            async function _detail(id) {
+                return await jsFunctions.detail(id);
             }
-            async function _test() {
+            async function _play(id) {
+                return await jsFunctions.play(null, id, null);
+            }
+            async function _search(wd) {
+                return await jsFunctions.search(wd, false);
+            }
+            async function _main() {
                 await jsFunctions.init(_cfg);
                 homeData = await jsFunctions.home();
                 const categoryStr = await _category(1);
@@ -32,7 +39,7 @@
                 const categoryJson = JSON.parse(categoryStr);
                 videoId = categoryJson.list[0].vod_id;
             }
-            _test().then((data)=> {
+            _main().then((data)=> {
                 console.log("init home success");
             });
             function onClickPage2() {
@@ -43,11 +50,26 @@
             function onClickDetail() {
                 _detail(videoId).then((data) => {
                     console.log(data);
+                    const detailJson = JSON.parse(data);
+                    const urlList = detailJson.list[0].vod_play_url;
+                    playUrl = urlList.split('#')[0].split('$')[1];
+                });
+            }
+            function onClickPlay() {
+                _play(playUrl).then((data) => {
+                    console.log(data);
+                });
+            }
+            function onClickSearch() {
+                _search('狂飙').then((data) => {
+                    console.log(data);
                 });
             }
         </script>
         <div id="load_container" style="display:none"></div>
         <button onclick="onClickPage2()">Page2</button>
         <button onclick="onClickDetail()">Detail</button>
+        <button onclick="onClickPlay()">Play</button>
+        <button onclick="onClickSearch()">Search</button>
     </body>
 </html>

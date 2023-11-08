@@ -32,12 +32,8 @@ const _ = {
             return callbackFn(item, index);
         });
         if (!isArray) {
-            if (mapResult['prevObject']) {
-                delete mapResult.prevObject;
-            }
-            if (mapResult['length']) {
-                delete mapResult.length;
-            }
+            mapResult['prevObject'] = undefined;
+            mapResult['length'] = undefined;
         }
         return mapResult;
     },
@@ -53,8 +49,8 @@ const _ = {
         return Object.values(object);
     },
 };
-function load(html) {
-    const domItems = $.parseHTML(html);
+function load(html, keepScripts = false) {
+    const domItems = $.parseHTML(html, null, keepScripts);
     const $loadContailed = $('#load_container');
     $loadContailed.empty();
     for (const domItem of domItems) {
@@ -79,6 +75,9 @@ async function req(reqUrl, params) {
             headers: params.headers,
             data: params.data,
             success: (data) => {
+                if (typeof(data) != 'string') {
+                    data = JSON.stringify(data);
+                }
                 resolve({
                     content: data,
                 });

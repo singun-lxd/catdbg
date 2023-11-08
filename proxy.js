@@ -73,6 +73,9 @@ function _handleDomItem(domItem) {
         domItem.attributes.type && domItem.attributes.type.value == 'text/css') {
         return false;
     }
+    if (domItem.localName == 'iframe') {
+        return false;
+    }
     if (domItem.localName == 'script' && domItem.attributes.src) {
         return false;
     }

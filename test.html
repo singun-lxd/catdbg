@@ -58,6 +58,9 @@
             function onClickPlay() {
                 _play(playUrl).then((data) => {
                     console.log(data);
+                    $('#load_container').empty();
+                    const playData = JSON.parse(data);
+                    $('#video_player').attr('src', playData.url).show();
                 });
             }
             function onClickSearch() {
@@ -71,5 +74,6 @@
         <button onclick="onClickDetail()">Detail</button>
         <button onclick="onClickPlay()">Play</button>
         <button onclick="onClickSearch()">Search</button>
+        <video id="video_player" width="320" height="240" autoplay="autoplay" controls="controls" style="display:none" src=""></video>
     </body>
 </html>

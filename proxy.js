@@ -62,7 +62,10 @@ function load(html, keepScripts = false) {
         }
         $loadContailed.append(domItem);
     }
-    return $loadContailed;
+    let loadFunc = (item) => {
+        return $loadContailed.find(item);
+    }
+    return loadFunc;
 }
 
 function _handleDomItem(domItem) {

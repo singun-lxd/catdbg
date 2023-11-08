@@ -27,17 +27,20 @@ Object.defineProperty(HTMLElement.prototype, 'children', {
 const _ = {
     map: function(array, callbackFn) {
         const isArray = Array.isArray(array);
-        const mapResult = array.map((index, item) => {
-            if (isArray) {
+        if (isArray) {
+            return array.map((index, item) => {
                 return callbackFn(index, item);
+            });
+        } else {
+            const newArray = [];
+            const targetLength = array.length;
+            for (let index = 0; index < targetLength; index++) {
+                const item = array[index];
+                const result = callbackFn(item, index);
+                newArray.push(result);
             }
-            return callbackFn(item, index);
-        });
-        if (!isArray) {
-            mapResult['prevObject'] = undefined;
-            mapResult['length'] = undefined;
+            return newArray;
         }
-        return mapResult;
     },
     each: function(array, callbackFn) {
         return array.each((index, item) => {

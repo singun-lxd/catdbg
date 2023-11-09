@@ -55,6 +55,8 @@ const _ = {
     },
 };
 
+const Crypto = CryptoJS;
+
 function load(html, keepScripts = false) {
     const domItems = $.parseHTML(html, null, keepScripts);
     const $loadContailed = $('#load_container');

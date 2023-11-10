@@ -4,9 +4,8 @@
         <meta charset="UTF-8">
     </head>
     <body>
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
-        <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js" ></script>
-        <script src="./proxy.js"></script>
+        <script src="./lib/cat.js"/></script>
+        <script src="./lib/cat_ext.js"/></script>
         <script src="./test.js"/></script>
         <script>
             const jsFunctions = __jsEvalReturn();
@@ -14,7 +13,7 @@
                 skey: 'test',
                 stype: 'test',
             };
-            const _tid = '20';
+            const _tid = '2';
             let homeData = null;
             let videoId = null;
             let playUrl = null;
@@ -37,7 +36,14 @@
                 const categoryStr = await _category(1);
                 console.log(categoryStr);
                 const categoryJson = JSON.parse(categoryStr);
-                videoId = categoryJson.list[0].vod_id;
+                const vodItem = categoryJson.list[3];
+                if (vodItem.vod_id && vodItem.vod_name &&
+                    vodItem.vod_pic) {
+                    videoId = vodItem.vod_id;
+                } else {
+                    throw 'item invalid';
+                }
+                
             }
             _main().then((data)=> {
                 console.log("init home success");

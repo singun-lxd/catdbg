@@ -51,12 +51,24 @@
             _main().then((data)=> {
                 console.log("init home success");
             });
+            function _playVideo(show, url) {
+                const player = document.querySelector('#video_player');
+                if (show) {
+                    player.attributes.src.nodeValue = url;
+                    player.attributes.style.nodeValue = '';
+                } else {
+                    player.attributes.src.nodeValue = '';
+                    player.attributes.style.nodeValue = 'display:none';
+                }
+            }
             function onClickPage2() {
+                _playVideo(false);
                 _category(2).then((data) => {
                     console.log(data);
                 });
             }
             function onClickDetail() {
+                _playVideo(false);
                 _detail(videoId).then((data) => {
                     console.log(data);
                     const detailJson = JSON.parse(data);
@@ -65,13 +77,15 @@
                 });
             }
             function onClickPlay() {
+                _playVideo(false);
                 _play(playUrl).then((data) => {
                     console.log(data);
                     const playData = JSON.parse(data);
-                    $('#video_player').attr('src', playData.url).show();
+                    _playVideo(true, playData.url);
                 });
             }
             function onClickSearch() {
+                _playVideo(false);
                 _search('梅花红桃', 1).then((data) => {
                     console.log(data);
                     const searchJson = JSON.parse(data);

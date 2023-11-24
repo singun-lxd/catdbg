@@ -6,14 +6,17 @@
     <body>
         <script src="./lib/cat.js"/></script>
         <script src="./lib/cat_ext.js"/></script>
+        <!-- script src="./lib/ali_api.js"/></script -->
+        <!-- script src="./lib/ali.js"/></script -->
         <script src="./test.js"/></script>
         <script>
             const jsFunctions = __jsEvalReturn();
             const _cfg = {
                 skey: 'test',
                 stype: 'test',
+                ext: ''
             };
-            const _tid = '2';
+            const _tid = '1';
             let homeData = null;
             let videoId = null;
             let playUrl = null;
@@ -27,8 +30,8 @@
             async function _play(id) {
                 return await jsFunctions.play(null, id, null);
             }
-            async function _search(wd) {
-                return await jsFunctions.search(wd, false);
+            async function _search(wd, pg) {
+                return await jsFunctions.search(wd, false, pg);
             }
             async function _main() {
                 await jsFunctions.init(_cfg);
@@ -36,7 +39,7 @@
                 const categoryStr = await _category(1);
                 console.log(categoryStr);
                 const categoryJson = JSON.parse(categoryStr);
-                const vodItem = categoryJson.list[3];
+                const vodItem = categoryJson.list[0];
                 if (vodItem.vod_id && vodItem.vod_name &&
                     vodItem.vod_pic) {
                     videoId = vodItem.vod_id;
@@ -64,18 +67,24 @@
             function onClickPlay() {
                 _play(playUrl).then((data) => {
                     console.log(data);
-                    $('#load_container').empty();
                     const playData = JSON.parse(data);
                     $('#video_player').attr('src', playData.url).show();
                 });
             }
             function onClickSearch() {
-                _search('狂飙').then((data) => {
+                _search('梅花红桃', 1).then((data) => {
                     console.log(data);
+                    const searchJson = JSON.parse(data);
+                    const vodItem = searchJson.list[0];
+                    if (vodItem.vod_id && vodItem.vod_name &&
+                        vodItem.vod_pic) {
+                        videoId = vodItem.vod_id;
+                    } else {
+                        throw 'item invalid';
+                    }
                 });
             }
         </script>
-        <div id="load_container" style="display:none"></div>
         <button onclick="onClickPage2()">Page2</button>
         <button onclick="onClickDetail()">Detail</button>
         <button onclick="onClickPlay()">Play</button>

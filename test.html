@@ -48,9 +48,11 @@
                 const classes = homeJson.class;
                 const filters = homeJson.filters;
                 tid = classes[0].type_id;
-                const defFilter = filters[tid][0];
                 extend = {};
-                extend[defFilter.key] = defFilter.init;
+                if (filters[tid]) {
+                    const defFilter = filters[tid][0];
+                    extend[defFilter.key] = defFilter.init;
+                }
                 const categoryStr = await _category(1);
                 console.log(categoryStr);
                 const categoryJson = JSON.parse(categoryStr);

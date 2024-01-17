@@ -6,22 +6,19 @@
     <body>
         <script src="./lib/cat.js"/></script>
         <script src="./lib/cat_ext.js"/></script>
-<!--         <script src="./lib/utils.js"/></script>
+        
+<!--    <script src="./lib/alivc.js"/></script>
+        <script src="./lib/utils.js"/></script>
         <script src="./lib/ali_api.js"/></script>
-        <script src="./lib/ali.js"/></script> -->
+        <script src="./lib/ali.js"/></script>
+        <script src="./lib/lz-string.js"/></script> -->
         <script src="./test.js"/></script>
         <script>
             const jsFunctions = __jsEvalReturn();
             const _cfg = {
                 skey: 'test',
-                stype: 'test',
+                stype: 3,
                 ext: {
-                  "key": "",
-                  "ic": "mssY6U737YHaGX4OjrBG8dnK8QrSnWRVo24nsmBF3LCxbm6oI23agJvbenxkbUneTU7oe4X%2F0N2hN%2BPw%2FxQiIVH%2BG7P4Yx0pESg0pQuc6PET1TqEiszTGAj%2Bay0GAXU1FlfHtuzo8zyrK1KkerSdLQ%3D%3D",
-                  "token": "",
-                  "url": "https://www.nfapp.fun",
-                  "configurl": "/appto/v1/config/get?p=android",
-                  "api": "/appto/v1"
                 }
             };
             let tid = null;
@@ -44,7 +41,7 @@
             async function _main() {
                 await jsFunctions.init(_cfg);
                 const homeData = await jsFunctions.home();
-                const homeJson = JSON.parse(homeData);
+                const homeJson = typeof(homeData)=='string' ? JSON.parse(homeData) : homeData;
                 const classes = homeJson.class;
                 const filters = homeJson.filters;
                 tid = classes[0].type_id;
@@ -55,11 +52,14 @@
                 }
                 const categoryStr = await _category(1);
                 console.log(categoryStr);
-                const categoryJson = JSON.parse(categoryStr);
+                const categoryJson = typeof(categoryStr)=='string' ? JSON.parse(categoryStr) : categoryStr;
                 const vodItem = categoryJson.list[0];
                 if (vodItem.vod_id && vodItem.vod_name &&
                     vodItem.vod_pic) {
                     videoId = vodItem.vod_id;
+                } else if (vodItem.book_id && vodItem.book_name &&
+                    vodItem.book_pic) {
+                    videoId = vodItem.book_id;
                 } else {
                     throw 'item invalid';
                 }
@@ -88,9 +88,10 @@
                 _playVideo(false);
                 _detail(videoId).then((data) => {
                     console.log(data);
-                    const detailJson = JSON.parse(data);
-                    const flagList = detailJson.list[0].vod_play_from;
-                    const urlList = detailJson.list[0].vod_play_url;
+                    const detailJson = typeof(data)=='string' ? JSON.parse(data) : data;
+                    const firstItem = detailJson.list[0];
+                    const flagList = firstItem.vod_play_from || firstItem.volumes;
+                    const urlList = firstItem.vod_play_url || firstItem.urls;
                     flag = flagList.split('$$$')[0];
                     playUrl = urlList.split('$$$')[0].split('#')[0].split('$')[1];
                 });
@@ -99,7 +100,7 @@
                 _playVideo(false);
                 _play(playUrl).then((data) => {
                     console.log(data);
-                    const playData = JSON.parse(data);
+                    const playData = typeof(data)=='string' ? JSON.parse(data) : data;
                     _playVideo(true, playData.url);
                 });
             }
@@ -107,11 +108,14 @@
                 _playVideo(false);
                 _search('人', 1).then((data) => {
                     console.log(data);
-                    const searchJson = JSON.parse(data);
+                    const searchJson = typeof(data)=='string' ? JSON.parse(data) : data;
                     const vodItem = searchJson.list[0];
                     if (vodItem.vod_id && vodItem.vod_name &&
                         vodItem.vod_pic) {
                         videoId = vodItem.vod_id;
+                    } else if (vodItem.book_id && vodItem.book_name &&
+                        vodItem.book_pic) {
+                        videoId = vodItem.book_id;
                     } else {
                         throw 'item invalid';
                     }

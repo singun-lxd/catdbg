@@ -6,12 +6,13 @@
     <body>
         <script src="./lib/cat.js"/></script>
         <script src="./lib/axios.js"/></script>
+        <script src="./lib/lodash.core.js"/></script>
         <script src="./lib/cat_ext.js"/></script>
 <!--    <script src="./lib/alivc.js"/></script>
         <script src="./lib/utils.js"/></script>
         <script src="./lib/ali_api.js"/></script>
-        <script src="./lib/ali.js"/></script>
-        <script src="./lib/lz-string.js"/></script> -->
+        <script src="./lib/ali.js"/></script> -->
+        <script src="./lib/lz-string.js"/></script>
         <script src="./test.js"/></script>
         <script>
             const jsFunctions = __jsEvalReturn();
@@ -22,7 +23,7 @@
             let tid = null;
             let extend = null;
             let videoId = null;
-            let flag = null;
+            let playFlag = null;
             let playUrl = null;
             async function _category(page) {
                 return await jsFunctions.category(tid, page, null, extend);
@@ -30,7 +31,7 @@
             async function _detail(id) {
                 return await jsFunctions.detail(id);
             }
-            async function _play(id) {
+            async function _play(flag, id) {
                 return await jsFunctions.play(flag, id, null);
             }
             async function _search(wd, pg) {
@@ -90,13 +91,13 @@
                     const firstItem = detailJson.list[0];
                     const flagList = firstItem.vod_play_from || firstItem.volumes;
                     const urlList = firstItem.vod_play_url || firstItem.urls;
-                    flag = flagList.split('$$$')[0];
+                    playFlag = flagList.split('$$$')[0];
                     playUrl = urlList.split('$$$')[0].split('#')[0].split('$')[1];
                 });
             }
             function onClickPlay() {
                 _playVideo(false);
-                _play(playUrl).then((data) => {
+                _play(playFlag, playUrl).then((data) => {
                     console.log(data);
                     const playData = typeof(data)=='string' ? JSON.parse(data) : data;
                     _playVideo(true, playData.url);
@@ -104,7 +105,7 @@
             }
             function onClickSearch() {
                 _playVideo(false);
-                _search('人', 1).then((data) => {
+                _search('三大队', 1).then((data) => {
                     console.log(data);
                     const searchJson = typeof(data)=='string' ? JSON.parse(data) : data;
                     const vodItem = searchJson.list[0];
